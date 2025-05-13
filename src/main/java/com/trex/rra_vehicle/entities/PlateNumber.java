@@ -1,0 +1,34 @@
+package com.trex.rra_vehicle.entities;
+
+import com.trex.rra_vehicle.enums.VehicleStatus;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.UUID;
+
+@Entity
+@Table(name = "plates")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class PlateNumber {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(unique = true, nullable = false)
+    private String number;
+
+    @Enumerated(EnumType.STRING)
+    private VehicleStatus plateStatus;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
+
+}
