@@ -1,10 +1,7 @@
 package com.trex.rra_vehicle.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -14,6 +11,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Vehicle {
 
     @Id
@@ -34,10 +32,6 @@ public class Vehicle {
 
     @Column(nullable = false)
     private Integer price;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
 
     @OneToOne(optional = false)
     @JoinColumn(name = "plate_id", unique = true, nullable = false)

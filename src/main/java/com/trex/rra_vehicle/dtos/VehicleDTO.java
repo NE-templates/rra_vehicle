@@ -19,7 +19,6 @@ public class VehicleDTO {
     private String manufacturer;
     private Integer manufacturedYear;
     private Integer price;
-    private UserDTO owner;
     private PlateDTO plate;
 
 }
