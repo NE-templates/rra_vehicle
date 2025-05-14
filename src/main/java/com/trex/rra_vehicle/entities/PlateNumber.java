@@ -2,10 +2,7 @@ package com.trex.rra_vehicle.entities;
 
 import com.trex.rra_vehicle.enums.VehicleStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -15,6 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class PlateNumber {
 
     @Id

@@ -41,6 +41,6 @@ public class Vehicle {
 
     @OneToOne(optional = false)
     @JoinColumn(name = "plate_id", unique = true, nullable = false)
-    private PlateNumber plateNumber;
+    private PlateNumber plate;
 
 }

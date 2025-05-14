@@ -1,9 +1,7 @@
 package com.trex.rra_vehicle.request;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import com.trex.rra_vehicle.enums.Roles;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -20,8 +18,8 @@ public class RegisterRequest {
 
     @NotBlank(message = "Phone number is required")
     @Pattern(
-            regexp = "^(\\+250|250|07)[0-9]{9}$",
-            message = "Phone must start with +2507, 2507 or 07"
+            regexp = "^(\\+2507|2507|07)[0-9]{8}$",
+            message = "Phone must start with +2507, 2507 or 07 and be followed by 8 digits"
     )
     private String phone;
 
@@ -38,6 +36,8 @@ public class RegisterRequest {
             message = "Invalid address format"
     )
     private String address;
+
+    private Roles role;
 
     @NotBlank(message = "Password is required")
     @Size(min = 6, message = "Password must be at least 6 characters long")
