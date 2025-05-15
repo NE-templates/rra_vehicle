@@ -122,7 +122,6 @@ public class VehicleService implements IVehicleImpl {
             vehicleRepository.save(existingVehicle);
         }
 
-
         return this.mapToDTO(existingVehicle);
     }
 
@@ -187,16 +186,25 @@ public class VehicleService implements IVehicleImpl {
                     if (searchVehiclesRequest.getNationalId() != null) {
                         Join<Object, Object> plateJoin = root.join("plate");
                         Join<Object, Object> ownerJoin = plateJoin.join("owner");
-                        predicate = cb.and(predicate, cb.equal(ownerJoin.get("nationalId"), searchVehiclesRequest.getNationalId()));
+                        predicate = cb.and(predicate, cb.like(
+                                cb.lower(ownerJoin.get("nationalId")),
+                                "%" + searchVehiclesRequest.getNationalId().toLowerCase() + "%"
+                        ));
                     }
 
                     if (searchVehiclesRequest.getPlateNumber() != null) {
                         Join<Object, Object> plateJoin = root.join("plate");
-                        predicate = cb.and(predicate, cb.equal(plateJoin.get("number"), searchVehiclesRequest.getPlateNumber()));
+                        predicate = cb.and(predicate, cb.like(
+                                cb.lower(plateJoin.get("number")),
+                                "%" + searchVehiclesRequest.getPlateNumber().toLowerCase() + "%"
+                        ));
                     }
 
                     if (searchVehiclesRequest.getChassisNumber() != null) {
-                        predicate = cb.and(predicate, cb.equal(root.get("chassisNumber"), searchVehiclesRequest.getChassisNumber()));
+                        predicate = cb.and(predicate, cb.like(
+                                cb.lower(root.get("chassisNumber")),
+                                "%" + searchVehiclesRequest.getChassisNumber().toLowerCase() + "%"
+                        ));
                     }
 
                     return predicate;
