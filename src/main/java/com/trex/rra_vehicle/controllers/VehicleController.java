@@ -2,6 +2,7 @@ package com.trex.rra_vehicle.controllers;
 
 import com.trex.rra_vehicle.dtos.VehicleDTO;
 import com.trex.rra_vehicle.request.RegisterVehicleRequest;
+import com.trex.rra_vehicle.request.SearchVehiclesRequest;
 import com.trex.rra_vehicle.request.UpdateVehicleRequest;
 import com.trex.rra_vehicle.response.APIResponse;
 import com.trex.rra_vehicle.services.VehicleService;
@@ -12,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +29,7 @@ public class VehicleController {
 
     @Operation(summary = "Register vehicle", description = "Registers a new vehicle")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/register")
     public ResponseEntity<APIResponse<VehicleDTO>> registerVehicle(@Valid @RequestBody RegisterVehicleRequest registerVehicleRequest) {
         VehicleDTO newVehicle = vehicleService.registerVehicle(registerVehicleRequest);
@@ -35,6 +38,7 @@ public class VehicleController {
 
     @Operation(summary = "Get vehicle by ID", description = "Fetches a vehicle using UUID")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{vehicleId}")
     public ResponseEntity<APIResponse<VehicleDTO>> getVehicle(@PathVariable UUID vehicleId) {
         VehicleDTO vehicle = vehicleService.getVehicle(vehicleId);
@@ -51,6 +55,7 @@ public class VehicleController {
 
     @Operation(summary = "Get all vehicles", description = "Fetches all vehicles")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/get-all")
     public ResponseEntity<APIResponse<List<VehicleDTO>>> getAll() {
         List<VehicleDTO> allVehicles = vehicleService.getAllVehicles();
@@ -75,6 +80,7 @@ public class VehicleController {
 
     @Operation(summary = "Update vehicle", description = "Api for updating vehicle")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/update/{vehicleId}")
     public ResponseEntity<APIResponse<VehicleDTO>> updateVehicle(@PathVariable UUID vehicleId, @Valid @RequestBody UpdateVehicleRequest updateVehicleRequest) {
         VehicleDTO updatedVehicle = vehicleService.updateVehicle(vehicleId, updateVehicleRequest);
@@ -83,10 +89,20 @@ public class VehicleController {
 
     @Operation(summary = "Delete vehicle", description = "Api for deleting vehicle by UUID")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{vehicleId}")
     public ResponseEntity<APIResponse<String>> deleteVehicle(@PathVariable UUID vehicleId) {
         vehicleService.deleteVehicle(vehicleId);
         return new APIResponse<>("Vehicle deleted successfully", HttpStatus.OK, String.format("Vehicle of %s ID was deleted", vehicleId)).toResponseEntity();
+    }
+
+    @Operation(summary = "Search vehicles", description = "Api for searching vehicle using plate, chassis number or owner's National ID")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/search")
+    public ResponseEntity<APIResponse<List<VehicleDTO>>> searchVehicles(@ModelAttribute SearchVehiclesRequest searchVehiclesRequest) {
+        List<VehicleDTO> resultVehicles = vehicleService.searchVehicles(searchVehiclesRequest);
+        return new APIResponse<>("Results form vehicle search", HttpStatus.OK, resultVehicles).toResponseEntity();
     }
 
 }

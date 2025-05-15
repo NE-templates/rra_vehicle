@@ -1,6 +1,7 @@
 package com.trex.rra_vehicle.services.impl;
 
 import com.trex.rra_vehicle.dtos.UserDTO;
+import com.trex.rra_vehicle.request.SearchUsersRequest;
 import com.trex.rra_vehicle.request.UpdateUserRequest;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public interface IUserImpl {
     UserDTO getUser(UUID userId);
     UserDTO updateUser(UUID userId, UpdateUserRequest updateUserRequest);
     void deleteUser(UUID userId);
-
     List<UserDTO> getAllUsers();
+    List<UserDTO> searchUsers(SearchUsersRequest searchUsersRequest);
 
 }

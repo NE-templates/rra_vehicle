@@ -28,6 +28,7 @@ public class PlateController {
 
     @Operation(summary = "Register plate", description = "Registers a new plate")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/new")
     public ResponseEntity<APIResponse<PlateDTO>> createPlate(@Valid @RequestBody RegisterPlateRequest registerPlateRequest) {
         PlateDTO newPlate = plateService.registerPlate(registerPlateRequest);
@@ -60,6 +61,7 @@ public class PlateController {
 
     @Operation(summary = "Get all plates ", description = "Fetches all plates")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/get-all")
     public ResponseEntity<APIResponse<List<PlateDTO>>> getAll() {
         List<PlateDTO> allPlates = plateService.getAllPlates();
@@ -76,6 +78,7 @@ public class PlateController {
 
     @Operation(summary = "Delete plate by ID", description = "Api for deleting a plate by Id")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{plateId}")
     public ResponseEntity<APIResponse<String>> deletePlate(@PathVariable UUID plateId) {
         plateService.deletePlate(plateId);

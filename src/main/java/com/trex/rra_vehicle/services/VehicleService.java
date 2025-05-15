@@ -12,8 +12,11 @@ import com.trex.rra_vehicle.repositories.PlateRepository;
 import com.trex.rra_vehicle.repositories.UserRepository;
 import com.trex.rra_vehicle.repositories.VehicleRepository;
 import com.trex.rra_vehicle.request.RegisterVehicleRequest;
+import com.trex.rra_vehicle.request.SearchVehiclesRequest;
 import com.trex.rra_vehicle.request.UpdateVehicleRequest;
 import com.trex.rra_vehicle.services.impl.IVehicleImpl;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -165,6 +168,41 @@ public class VehicleService implements IVehicleImpl {
         );
 
         return this.mapToDTO(vehicle);
+    }
+
+    @Override
+    public List<VehicleDTO> searchVehicles(SearchVehiclesRequest searchVehiclesRequest) {
+
+        if (searchVehiclesRequest.getNationalId() == null &&
+                searchVehiclesRequest.getChassisNumber() == null &&
+                searchVehiclesRequest.getPlateNumber() == null) {
+            return vehicleRepository.findAll().stream()
+                    .map(this::mapToDTO)
+                    .toList();
+        }
+
+        return vehicleRepository.findAll((root, query, cb) -> {
+                    Predicate predicate = cb.conjunction();
+
+                    if (searchVehiclesRequest.getNationalId() != null) {
+                        Join<Object, Object> plateJoin = root.join("plate");
+                        Join<Object, Object> ownerJoin = plateJoin.join("owner");
+                        predicate = cb.and(predicate, cb.equal(ownerJoin.get("nationalId"), searchVehiclesRequest.getNationalId()));
+                    }
+
+                    if (searchVehiclesRequest.getPlateNumber() != null) {
+                        Join<Object, Object> plateJoin = root.join("plate");
+                        predicate = cb.and(predicate, cb.equal(plateJoin.get("number"), searchVehiclesRequest.getPlateNumber()));
+                    }
+
+                    if (searchVehiclesRequest.getChassisNumber() != null) {
+                        predicate = cb.and(predicate, cb.equal(root.get("chassisNumber"), searchVehiclesRequest.getChassisNumber()));
+                    }
+
+                    return predicate;
+                }).stream()
+                .map(this::mapToDTO)
+                .toList();
     }
 
     private VehicleDTO mapToDTO(Vehicle vehicle) {

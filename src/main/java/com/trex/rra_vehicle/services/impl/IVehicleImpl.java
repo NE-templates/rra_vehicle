@@ -2,6 +2,7 @@ package com.trex.rra_vehicle.services.impl;
 
 import com.trex.rra_vehicle.dtos.VehicleDTO;
 import com.trex.rra_vehicle.request.RegisterVehicleRequest;
+import com.trex.rra_vehicle.request.SearchVehiclesRequest;
 import com.trex.rra_vehicle.request.UpdateVehicleRequest;
 
 import java.util.List;
@@ -17,5 +18,6 @@ public interface IVehicleImpl {
     List<VehicleDTO> getAllVehicles();
     List<VehicleDTO> getUserVehicles(UUID userId);
     VehicleDTO getVehicleByPlateNumber(String plateNumber);
+    List<VehicleDTO> searchVehicles(SearchVehiclesRequest searchVehiclesRequest);
 
 }

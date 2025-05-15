@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,7 @@ public class HistoryController {
 
     @Operation(summary = "Get history by ID", description = "Fetches history record using UUID")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<APIResponse<HistoryDTO>> getHistory(@PathVariable UUID id) {
       HistoryDTO history = historyService.getHistory(id);
@@ -35,6 +37,7 @@ public class HistoryController {
 
     @Operation(summary = "Get vehicle history", description = "Fetches vehicle history using chassis number")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/get-by-vehicle/{chassisNumber}")
     public ResponseEntity<APIResponse<List<HistoryDTO>>> getVehicleHistory(@PathVariable String chassisNumber) {
         List<HistoryDTO> vehicleHistory = historyService.getVehicleHistory(chassisNumber);
@@ -43,6 +46,7 @@ public class HistoryController {
 
     @Operation(summary = "Get all history", description = "Fetches all history records")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/get-all")
     public ResponseEntity<APIResponse<List<HistoryDTO>>> getAll() {
         List<HistoryDTO> allHistory = historyService.getAll();

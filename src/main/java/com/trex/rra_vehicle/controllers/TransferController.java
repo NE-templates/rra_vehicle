@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class TransferController {
 
     @Operation(summary = "Create transfer", description = "Api for creating new transfer")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<APIResponse<TransferDTO>> createTransfer(@Valid @RequestBody CreateTransferRequest createTransferRequest) {
         TransferDTO transfer = transferService.createTransfer(createTransferRequest);
@@ -42,6 +44,7 @@ public class TransferController {
 
     @Operation(summary = "Get all transfers", description = "Api to get all transfers")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/get-all")
     public ResponseEntity<APIResponse<List<TransferDTO>>> getAllTransfers() {
         List<TransferDTO> allTransfers = transferService.getAll();
@@ -50,6 +53,7 @@ public class TransferController {
 
     @Operation(summary = "Get vehicle transfers", description = "Fetches transfers made on a vehicle by chassis number")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/get-by-vehicle/{vehicleChassis}")
     public ResponseEntity<APIResponse<List<TransferDTO>>> getVehicleTransfers(@PathVariable String vehicleChassis) {
         List<TransferDTO> vehicleTransfers = transferService.getVehicleTransfers(vehicleChassis);
@@ -58,6 +62,7 @@ public class TransferController {
 
     @Operation(summary = "Delete transfer", description = "Api to delete a transfer by ID")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{transferId}")
     public ResponseEntity<APIResponse<String>> deleteTransfer(@PathVariable UUID transferId) {
         transferService.deleteTransfer(transferId);

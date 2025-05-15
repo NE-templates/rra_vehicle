@@ -4,8 +4,10 @@ import com.trex.rra_vehicle.dtos.UserDTO;
 import com.trex.rra_vehicle.entities.User;
 import com.trex.rra_vehicle.exceptions.BadRequestException;
 import com.trex.rra_vehicle.repositories.UserRepository;
+import com.trex.rra_vehicle.request.SearchUsersRequest;
 import com.trex.rra_vehicle.request.UpdateUserRequest;
 import com.trex.rra_vehicle.services.impl.IUserImpl;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -80,6 +82,35 @@ public class UserService implements IUserImpl {
     public List<UserDTO> getAllUsers() {
         List<User> allUsers = userRepository.findAll();
         return allUsers.stream().map(this::mapToDto).toList();
+    }
+
+    @Override
+    public List<UserDTO> searchUsers(SearchUsersRequest searchUsersRequest) {
+        if (searchUsersRequest.getNationalId() == null &&
+                searchUsersRequest.getEmail() == null &&
+                searchUsersRequest.getPhone() == null) {
+            return userRepository.findAll().stream()
+                    .map(this::mapToDto)
+                    .toList();
+        }
+
+        return userRepository.findAll((root, query, cb) -> {
+                    Predicate predicate = cb.conjunction();
+
+                    if (searchUsersRequest.getNationalId() != null) {
+                        predicate = cb.and(predicate, cb.equal(root.get("nationalId"), searchUsersRequest.getNationalId()));
+                    }
+                    if (searchUsersRequest.getEmail() != null) {
+                        predicate = cb.and(predicate, cb.equal(root.get("email"), searchUsersRequest.getEmail()));
+                    }
+                    if (searchUsersRequest.getPhone() != null) {
+                        predicate = cb.and(predicate, cb.equal(root.get("phone"), searchUsersRequest.getPhone()));
+                    }
+
+                    return predicate;
+                }).stream()
+                .map(this::mapToDto)
+                .toList();
     }
 
     private UserDTO mapToDto(User user) {
