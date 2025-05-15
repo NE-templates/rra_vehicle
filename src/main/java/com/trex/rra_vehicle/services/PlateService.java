@@ -42,19 +42,16 @@ public class PlateService implements IPlateImpl {
         PlateNumber newPlate = PlateNumber.builder()
                 .number(registerPlateRequest.getNumber())
                 .owner(plateOwner)
+                .plateStatus(VehicleStatus.INACTIVE)
                 .build();
 
-        if(registerPlateRequest.getPlateStatus() == null) {
-            newPlate.setPlateStatus(VehicleStatus.INACTIVE);
-        }
-        newPlate.setPlateStatus(registerPlateRequest.getPlateStatus());
 
-        PlateNumber savedPlate = plateRepository.save(newPlate);
+        plateRepository.save(newPlate);
 
         return PlateDTO.builder()
-                .id(savedPlate.getId())
-                .number(savedPlate.getNumber())
-                .plateStatus(savedPlate.getPlateStatus())
+                .id(newPlate.getId())
+                .number(newPlate.getNumber())
+                .plateStatus(newPlate.getPlateStatus())
                 .owner(UserDTO.builder()
                         .names(plateOwner.getNames())
                         .email(plateOwner.getEmail())

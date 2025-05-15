@@ -2,10 +2,7 @@ package com.trex.rra_vehicle.entities;
 
 import com.trex.rra_vehicle.enums.HistoryEvent;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -17,6 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class History {
 
     @Id
@@ -24,13 +22,15 @@ public class History {
     private UUID id;
 
     @CreationTimestamp
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private HistoryEvent event;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "vehicle_id", nullable = false)
-    private Vehicle vehicle;
+    @OneToOne(optional = false)
+    @JoinColumn(name = "transfer_id", nullable = false)
+    private Transfer transfer;
 
 }

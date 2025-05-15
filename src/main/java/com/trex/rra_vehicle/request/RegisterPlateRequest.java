@@ -19,8 +19,6 @@ public class RegisterPlateRequest {
     @NotNull(message = "Plate number is required")
     private String number;
 
-    private VehicleStatus plateStatus;
-
     @NotNull(message = "Id of owner is required")
     private UUID ownerId;
 

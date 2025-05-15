@@ -17,7 +17,7 @@ public class HistoryDTO {
 
     private UUID id;
     private HistoryEvent event;
-    private VehicleDTO vehicle;
+    private TransferDTO transfer;
     private LocalDateTime createdAt;
 
 }

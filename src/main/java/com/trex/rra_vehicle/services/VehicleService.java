@@ -5,6 +5,7 @@ import com.trex.rra_vehicle.dtos.UserDTO;
 import com.trex.rra_vehicle.dtos.VehicleDTO;
 import com.trex.rra_vehicle.entities.PlateNumber;
 import com.trex.rra_vehicle.entities.Vehicle;
+import com.trex.rra_vehicle.enums.VehicleStatus;
 import com.trex.rra_vehicle.exceptions.BadRequestException;
 import com.trex.rra_vehicle.exceptions.ResourceConflictException;
 import com.trex.rra_vehicle.repositories.PlateRepository;
@@ -36,9 +37,15 @@ public class VehicleService implements IVehicleImpl {
             throw new ResourceConflictException(String.format("Vehicle with %s chassis number already exists", registerVehicleRequest.getChassisNumber()));
         }
 
+        if(vehicleRepository.existsByPlate_Number(registerVehicleRequest.getPlateNumber())) {
+            throw new BadRequestException(String.format("This plate %s has a vehicle assigned to it", registerVehicleRequest.getPlateNumber()));
+        }
+
         PlateNumber vehiclePlate = plateRepository.findByNumber(registerVehicleRequest.getPlateNumber()).orElseThrow(
                 () -> new BadRequestException(String.format("Plate with this number %s, isn't registered", registerVehicleRequest.getPlateNumber()))
         );
+        vehiclePlate.setPlateStatus(VehicleStatus.ACTIVE);
+
 
         Vehicle newVehicle = Vehicle.builder()
                 .model(registerVehicleRequest.getModel())
