@@ -98,13 +98,18 @@ public class UserService implements IUserImpl {
                     Predicate predicate = cb.conjunction();
 
                     if (searchUsersRequest.getNationalId() != null) {
-                        predicate = cb.and(predicate, cb.equal(root.get("nationalId"), searchUsersRequest.getNationalId()));
+                        String nationalIdSearch = "%" + searchUsersRequest.getNationalId().trim().toLowerCase() + "%";
+                        predicate = cb.and(predicate, cb.like(cb.lower(root.get("nationalId")), nationalIdSearch));
                     }
+
                     if (searchUsersRequest.getEmail() != null) {
-                        predicate = cb.and(predicate, cb.equal(root.get("email"), searchUsersRequest.getEmail()));
+                        String emailSearch = "%" + searchUsersRequest.getEmail().trim().toLowerCase() + "%";
+                        predicate = cb.and(predicate, cb.like(cb.lower(root.get("email")), emailSearch));
                     }
+
                     if (searchUsersRequest.getPhone() != null) {
-                        predicate = cb.and(predicate, cb.equal(root.get("phone"), searchUsersRequest.getPhone()));
+                        String phoneSearch = "%" + searchUsersRequest.getPhone().trim().toLowerCase() + "%";
+                        predicate = cb.and(predicate, cb.like(cb.lower(root.get("phone")), phoneSearch));
                     }
 
                     return predicate;
@@ -112,6 +117,7 @@ public class UserService implements IUserImpl {
                 .map(this::mapToDto)
                 .toList();
     }
+
 
     private UserDTO mapToDto(User user) {
         return UserDTO.builder()
